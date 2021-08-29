@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head >
+    <meta charset="UTF-8">
+    <section  th:fragment="search" class="header__search white-bg transition-3">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="header__search-inner text-center">
+                        <form th:action="@{/searchProduct}">
+                            <div class="header__search-btn">
+                                <a href="javascript:void(0);" class="header__search-btn-close"><i class="fal fa-times"></i></a>
+                            </div>
+                            <div class="header__search-header">
+                                <h3>Search</h3>
+                            </div>
+                            <div class="header__search-input p-relative">
+                                    <input id="search-key" name="key" type="text" placeholder="Search for products... ">
+                                    <button onclick="searchProduct()" type="button"><i class="far fa-search"></i></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function searchProduct(){
+                let keyWord = $("#search-key").val();
+                if(keyWord != "") window.location.replace(preUrl + "/searchProduct?key=" + keyWord);
+            }
+        </script>
+    </section>
+</head>
+<body>
+</body>
+</html>
