@@ -201,8 +201,7 @@
                 <div class="product__banner p-relative">
                     <div class="product__banner-inner p-absolute fix d-none d-lg-block">
                         <div class="product__banner-img">
-                            <a th:href="@{/products}"><img src="../img/shop/product/hublot-big-1.jpg"
-                                                                alt="product-banner"></a>
+                            <a th:href="@{/products}"><img src="../img/shop/product/hublot-big-1.jpg" alt="product-banner"></a>
                         </div>
                         <div class="product__banner-content p-absolute">
                             <h4 style="Color: white"><a href="product-details.html">HUBLOT <br>BY CARLO CROCCO</a></h4>
@@ -338,7 +337,7 @@
     getTopProduct(12);
     function getTopProduct(n){
         let request = {
-            brandID : 1,
+            brandID : 0,
             minPrice: 0,
             maxPrice: 0,
             productNumberPerPage: n,
