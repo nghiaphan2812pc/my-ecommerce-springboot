@@ -1,15 +1,10 @@
 package com.example.ecommerce.controller_general;
 
-import com.example.ecommerce.dto.RegisterRequest;
-import com.example.ecommerce.model.Response;
-import com.example.ecommerce.model.User;
-import com.example.ecommerce.oauth2.AuthProvider;
 import com.example.ecommerce.repository.UserRepository;
 import com.example.ecommerce.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,30 +49,12 @@ public class HomeController {
     public String products(){
         return "products";
     }
-    @RequestMapping(value = "/verifyRegister/{token}")
-    public String verifyRegister(@PathVariable(value = "token")String token){
-        if(!jwtUtil.validateRegisterEmailToken(token)){
-            return "verifyFailed";
-        }
-        RegisterRequest request = jwtUtil.readRegisterToken(token);
-        //Success validate
-        //Add new user to DB
-        User user = new User(request.getUsername(),passwordEncoder.encode(request.getPassword()), request.getFullName(),request.getEmail(),request.getPhone(),request.getAddress(),"USER", AuthProvider.LOCAL);
-        userRepository.save(user);
-        return "successRegisterPage";
-    }
-    @RequestMapping(value = "/pleaseVerifyEmailPage",method = RequestMethod.GET)
-    public String pleaseVerifyEmail(){
-        return "pleaseVerifyEmailPage";
-    }
+
     @RequestMapping(value = "/productDetail" , method = RequestMethod.GET)
     public String productDetail(@RequestParam(name = "id")int id){
         return "product-details";
     }
-    @RequestMapping(value = "/successLoginWithGoogle" , method = RequestMethod.GET)
-    public String productDetail(@RequestParam(name = "token")String token){
-        return "successLoginWithGoogle";
-    }
+
     @RequestMapping(value = "/updateUserInfo" , method = RequestMethod.GET)
     public String updateUserInfo(){
         return "updateUserInfo";

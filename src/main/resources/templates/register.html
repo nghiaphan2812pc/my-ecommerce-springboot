@@ -175,7 +175,7 @@
         console.log("response", response);
         $("#loading").css("display", "none");
         if(response.code == 200){
-          window.location.replace(preUrl+"/pleaseVerifyEmailPage");
+          window.location.replace(preUrl+"/successRegister");
         }
         else {
           message = response.message;
