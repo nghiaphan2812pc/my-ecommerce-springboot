@@ -174,7 +174,7 @@
         success: function (response){
           console.log(response);
           if(response.code == 200){
-            document.cookie = "Token=" + response.data;
+            document.cookie = "Username=" + response.data;
             window.location.replace(preUrl+"/index");
           }
           else{

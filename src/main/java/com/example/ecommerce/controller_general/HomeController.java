@@ -1,15 +1,9 @@
 package com.example.ecommerce.controller_general;
 
-import com.example.ecommerce.dto.RegisterRequest;
-import com.example.ecommerce.model.Response;
-import com.example.ecommerce.model.User;
-import com.example.ecommerce.oauth2.AuthProvider;
 import com.example.ecommerce.repository.UserRepository;
 import com.example.ecommerce.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +14,6 @@ public class HomeController {
     JwtUtil jwtUtil;
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(){
         return "index";
@@ -54,18 +46,18 @@ public class HomeController {
     public String products(){
         return "products";
     }
-    @RequestMapping(value = "/verifyRegister/{token}")
-    public String verifyRegister(@PathVariable(value = "token")String token){
-        if(!jwtUtil.validateRegisterEmailToken(token)){
-            return "verifyFailed";
-        }
-        RegisterRequest request = jwtUtil.readRegisterToken(token);
-        //Success validate
-        //Add new user to DB
-        User user = new User(request.getUsername(),passwordEncoder.encode(request.getPassword()), request.getFullName(),request.getEmail(),request.getPhone(),request.getAddress(),"USER", AuthProvider.LOCAL);
-        userRepository.save(user);
-        return "successRegisterPage";
-    }
+//    @RequestMapping(value = "/verifyRegister/{token}")
+//    public String verifyRegister(@PathVariable(value = "token")String token){
+//        if(!jwtUtil.validateRegisterEmailToken(token)){
+//            return "verifyFailed";
+//        }
+//        RegisterRequest request = jwtUtil.readRegisterToken(token);
+//        //Success validate
+//        //Add new user to DB
+//        User user = new User(request.getUsername(),passwordEncoder.encode(request.getPassword()), request.getFullName(),request.getEmail(),request.getPhone(),request.getAddress(),"USER", AuthProvider.LOCAL);
+//        userRepository.save(user);
+//        return "successRegisterPage";
+//    }
     @RequestMapping(value = "/pleaseVerifyEmailPage",method = RequestMethod.GET)
     public String pleaseVerifyEmail(){
         return "pleaseVerifyEmailPage";

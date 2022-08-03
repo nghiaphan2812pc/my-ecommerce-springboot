@@ -90,7 +90,7 @@
         var moneyFormat = Intl.NumberFormat('vi-VN');
         var miniCartTotalPrice = 0;
         var userInfo = null ;
-        var token = getCookie("Token");
+        var username = null;
         getUserInfo();
         var userID = null;
         if(userInfo != null){
@@ -99,12 +99,11 @@
         getMiniCart(userID);
         function getMiniCart(userID){
             if (userID == null) return;
-            token = getCookie("Token");
+            username = getCookie("Username");
             $.ajax({
                 url: preUrl + "/getCart/" + userID,
                 type: "GET",
-                data: { signature: token },
-                beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
+                data: { Username: username },
                 success: function (response) {
                     console.log(response);
                     if(response.code == 200){
@@ -169,12 +168,11 @@
             return "";
         }
         function getUserInfo(){
-            token = getCookie("Token");
+            username = getCookie("Username");
             $.ajax({
                 url: preUrl + "/getUserInfo",
                 type: "GET",
-                data: { signature: token },
-                beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
+                data: { Username: username },
                 async: false,
                 success: function (result) {
                     console.log(result);
@@ -184,6 +182,9 @@
                     }else{
                         $(".loged-in").css("display", "none");
                     }
+                },
+                error: function () {
+                    $(".loged-in").css("display", "none");
                 }
             })
         }
@@ -195,7 +196,7 @@
             document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         }
         function logout(){
-            delete_cookie("Token");
+            delete_cookie("Username");
             window.location.replace(preUrl + "/index");
         }
     </script>

@@ -25,11 +25,9 @@ public class UserCartAPI {
     private JwtUtil jwtUtil;
 
     @RequestMapping(value = "/getCart/{userID}", method = RequestMethod.GET)
-    public Response getCart(@PathVariable(value = "userID")int userID, @RequestHeader(value = "Token")String token){
+    public Response getCart(@PathVariable(value = "userID")int userID, @RequestParam(value = "Username")String username){
         //Validate token
-        if(!jwtUtil.validateTokenWithID(token,userID)){
-            return new Response(Code.UNAUTHENTICATED, Message.UNAUTHENTICATED, null);
-        }
+
         //Validate userID
         Optional<User> user = userRepository.findById(userID);
         if(!user.isPresent()){

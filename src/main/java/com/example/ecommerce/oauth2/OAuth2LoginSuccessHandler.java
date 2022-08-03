@@ -23,8 +23,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     private UserRepository userRepository;
     @Autowired
     private JwtUtil jwtUtil;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User auth2User = (CustomOAuth2User) authentication.getPrincipal();
@@ -48,6 +46,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     public User createNewUser(String email, String name, AuthProvider authProvider){
         String password = UUID.randomUUID().toString();
-        return new User(email,passwordEncoder.encode(password), name, email,null, null, "USER", AuthProvider.GOOGLE);
+        return new User(email,password, name, email,null, null, "USER", AuthProvider.GOOGLE);
     }
 }

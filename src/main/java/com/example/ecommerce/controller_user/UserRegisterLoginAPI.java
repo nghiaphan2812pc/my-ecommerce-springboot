@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class UserRegisterLoginAPI {
     @Autowired
-    private DaoAuthenticationProvider authenticationProvider;
+    private UserRepository userRepository;
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
@@ -39,17 +39,12 @@ public class UserRegisterLoginAPI {
         if(username == null || password == null){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Authenticate Username and Password
-        try{
-            authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-        } catch (BadCredentialsException e){
-            //Unauthenticated
-            return new Response(Code.INCORRECT_USERNAME_PASSWORD, Message.INCORRECT_USERNAME_PASSWORD, null);
+
+        User user = userRepository.findByUsername(username);
+        if (user == null || password.equals(user.getPassword())) {
+            return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Success authenticated
-        //Response JWT token
-        String token = jwtUtil.generateToken(loginRequest.getUsername());
-        return new Response(Code.SUCCESS, Message.SUCCESS, token);
+        return new Response(Code.SUCCESS, Message.SUCCESS, username);
     }
 
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
@@ -92,12 +87,9 @@ public class UserRegisterLoginAPI {
             return new Response(Code.DATA_DUPLICATED_PHONE, Message.DATA_DUPLICATED_PHONE, null);
         }
 
-        // Send verify mail link
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(registerRequest.getEmail());
-        msg.setSubject("Success Registered");
-        msg.setText(  "Click this link to verify your account: \n"  +  "http://localhost:8091/verifyRegister/" + jwtUtil.generateJWTForRegister(registerRequest));
-        javaMailSender.send(msg);
+        User user = new User(username, password, fullName, email, phone, address,"USER",null);
+        userRepository.save(user);
+
         return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
 

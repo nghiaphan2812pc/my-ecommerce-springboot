@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,16 +30,11 @@ class UserInfoAPI {
     private ValidateInputService validateInputService;
     @Autowired
     private EmailSenderService emailSenderService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
     @RequestMapping(value = "/getUserInfo",method = RequestMethod.GET)
-    public Response getUserInfo(@RequestHeader(value ="Token")String token){
-        //Authenticate token
-        if(!jwtUtil.validateToken(token)){
-            return new Response(Code.UNAUTHENTICATED, Message.UNAUTHENTICATED, null);
+    public Response getUserInfo(@RequestParam(value ="Username")String username){
+        if (username == null) {
+            return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Extract User-info
-        String username = jwtUtil.readUsername(token);
         User user = userRepository.findByUsername(username);
         int id = user.getId();
         String fullName = user.getFullName();
@@ -130,7 +124,7 @@ class UserInfoAPI {
         }
         String email = jwtUtil.readResetPasswordToken(token);
         User user = userRepository.findByEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(password);
         userRepository.save(user);
         return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
@@ -153,11 +147,11 @@ class UserInfoAPI {
             return new Response(Code.INVALID_PASSWORD, Message.INVALID_PASSWORD, null);
         }
         //Validate old password
-        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+        if(oldPassword.equals(user.getPassword())){
             return new Response(Code.INCORRECT_PASSWORD, Message.INCORRECT_PASSWORD, null);
         }
         //Change password
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(newPassword);
         userRepository.save(user);
         return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
