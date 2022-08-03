@@ -7,14 +7,9 @@ import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.model.Response;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.repository.UserRepository;
-import com.example.ecommerce.service.JwtUtil;
 import com.example.ecommerce.service.ValidateInputService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController()
 public class UserRegisterLoginAPI {
     @Autowired
-    private DaoAuthenticationProvider authenticationProvider;
+    UserRepository userRepository;
     @Autowired
-    private JwtUtil jwtUtil;
+    PasswordEncoder passwordEncoder;
     @Autowired
     private ValidateInputService validateInputService;
     @Autowired
@@ -39,17 +34,11 @@ public class UserRegisterLoginAPI {
         if(username == null || password == null){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Authenticate Username and Password
-        try{
-            authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-        } catch (BadCredentialsException e){
-            //Unauthenticated
-            return new Response(Code.INCORRECT_USERNAME_PASSWORD, Message.INCORRECT_USERNAME_PASSWORD, null);
+        User user = userRepository.findByUsername(username);
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Success authenticated
-        //Response JWT token
-        String token = jwtUtil.generateToken(loginRequest.getUsername());
-        return new Response(Code.SUCCESS, Message.SUCCESS, token);
+        return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
 
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
@@ -92,12 +81,9 @@ public class UserRegisterLoginAPI {
             return new Response(Code.DATA_DUPLICATED_PHONE, Message.DATA_DUPLICATED_PHONE, null);
         }
 
-        // Send verify mail link
-        SimpleMailMessage msg = new SimpleMailMessage();
-        msg.setTo(registerRequest.getEmail());
-        msg.setSubject("Success Registered");
-        msg.setText(  "Click this link to verify your account: \n"  +  "http://localhost:8091/verifyRegister/" + jwtUtil.generateJWTForRegister(registerRequest));
-        javaMailSender.send(msg);
+        User user = new User(username, passwordEncoder.encode(password), fullName, email, phone, address,"USER");
+        userRepository.save(user);
+
         return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
 

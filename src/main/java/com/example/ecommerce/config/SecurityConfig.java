@@ -1,8 +1,6 @@
 package com.example.ecommerce.config;
 
 import com.example.ecommerce.filter.JwtAuthenticationRequestFilter;
-import com.example.ecommerce.oauth2.CustomOauth2UserService;
-import com.example.ecommerce.oauth2.OAuth2LoginSuccessHandler;
 import com.example.ecommerce.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,10 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAuthenticationRequestFilter jwtAuthenticationRequestFilter;
     @Autowired
     private AuthenticationEntryPoint unauthorizedHandler;
-    @Autowired
-    private CustomOauth2UserService customOauth2UserService;
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -60,10 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and()
                 .oauth2Login()
-                .loginPage("/loginWithGoogle")
-                .userInfoEndpoint().userService(customOauth2UserService)
-                .and()
-                .successHandler(oAuth2LoginSuccessHandler)
         ;
         http.addFilterBefore(jwtAuthenticationRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

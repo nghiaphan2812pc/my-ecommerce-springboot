@@ -82,7 +82,7 @@
       <div class="row">
         <div class="col-xl-12">
           <div class="page__title-inner text-center">
-            <h1 style="font-size: 50px;color: whitesmoke;">Success Login with Google!</h1>
+            <h1 style="font-size: 50px;color: whitesmoke;">Success Login</h1>
           </div>
         </div>
       </div>
@@ -115,9 +115,6 @@
 <script>
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  token = urlParams.get('token');
-  console.log(token);
-  document.cookie = "Token=" + token;
   window.location.replace(preUrl+"/index");
 </script>
 <!-- Mirrored from themepure.net/template/outstock-prv/outstock/register.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 05 Aug 2021 13:07:51 GMT -->
