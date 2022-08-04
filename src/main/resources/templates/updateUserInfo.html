@@ -157,20 +157,17 @@ else{
   $("#address").val(userInfo.address);
 }
 function updateUserInfo(){
-  token = getCookie("Token");
   let request = {
     id: userInfo.id,
     fullName: $("#fullname").val(),
     phone: $("#phone").val(),
     address: $("#address").val(),
-    signature: token
   }
   $.ajax({
     url: preUrl + "/updateUserInfo",
     type: "POST",
     data: JSON.stringify(request),
     contentType: "application/json",
-    beforeSend: function(xhr){xhr.setRequestHeader('update-user-info-token', token);},
     success: function (response){
       console.log(response);
       $("#message").html(response.message);

@@ -1,6 +1,5 @@
 package com.example.ecommerce.model;
 
-import com.example.ecommerce.oauth2.AuthProvider;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -28,13 +27,11 @@ public class User {
     private String role;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user_id", cascade = CascadeType.ALL)
     private List<CartProduct> cart;
-    @Column
-    @Enumerated(EnumType.STRING)
-    private AuthProvider authProvider;
+
     public User() {
     }
 
-    public User(String username, String password, String fullName, String email, String phone, String address, String role, AuthProvider authProvider) {
+    public User(String username, String password, String fullName, String email, String phone, String address, String role) {
         this.username = username;
         this.password = password;
         this.fullName = fullName;
@@ -42,6 +39,5 @@ public class User {
         this.phone = phone;
         this.address = address;
         this.role = role;
-        this.authProvider = authProvider;
     }
 }

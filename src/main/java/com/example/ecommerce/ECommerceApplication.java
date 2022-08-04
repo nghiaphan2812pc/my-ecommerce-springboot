@@ -1,17 +1,10 @@
 package com.example.ecommerce;
 
-import com.example.ecommerce.model.*;
 import com.example.ecommerce.repository.*;
-import com.example.ecommerce.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-
-import java.sql.Date;
-import java.util.*;
 
 
 @SpringBootApplication
@@ -20,8 +13,6 @@ public class ECommerceApplication implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(ECommerceApplication.class, args);
     }
-    @Autowired
-    private JwtUtil jwtUtil;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -32,8 +23,6 @@ public class ECommerceApplication implements CommandLineRunner {
     private CartProductRepository cartProductRepository;
     @Autowired
     private BrandRepository brandRepository;
-    @Autowired
-    JavaMailSender javaMailSender;
     @Autowired
     ImageRepository imageRepository;
     @Override

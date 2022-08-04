@@ -214,10 +214,8 @@
                     <td>
                       <ul>
                         <li>
-                          <input type="radio" />
-                          <label>Free Shipping:</label>
+                          <label>Free Shipping</label>
                         </li>
-                        <li></li>
                       </ul>
                     </td>
                   </tr>
@@ -345,11 +343,9 @@
     if(userID == null){
       window.location.replace(preUrl + "/login");
     }
-    token = getCookie("Token");
     $.ajax({
       url: preUrl + "/getCart/" + userID,
       type: "GET",
-      beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
       success: function (response) {
         console.log(response);
         if(response.code == 200){
@@ -390,13 +386,10 @@
   }
   var message = "";
   function checkoutWithDefaultInfo(userID){
-    token = getCookie("Token");
     $("#loading").css("display", "block");
     $.ajax({
       url: preUrl + "/checkoutWithDefaultInfo/" + userID,
       type: "GET",
-      data: { signature: token },
-      beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
       success: function (response){
         console.log(response);
         $("#loading").css("display", "none");
@@ -413,13 +406,11 @@
     })
   }
   function checkoutWithNewInfo(userID){
-    token = getCookie("Token");
     let request = {
       fullName: $('#new-info-fullname').val(),
       phone: $('#new-info-phone').val(),
       address: $('#new-info-address').val(),
       note: $('#checkout-mess').val(),
-      signature: token,
     }
     $("#loading").css("display", "block");
     $.ajax({
@@ -427,7 +418,6 @@
       type: "POST",
       data: JSON.stringify(request),
       contentType: "application/json",
-      beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
       success: function (response){
         console.log(response);
         $("#loading").css("display", "none");

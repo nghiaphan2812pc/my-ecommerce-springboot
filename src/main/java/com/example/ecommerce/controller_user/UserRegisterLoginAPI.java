@@ -7,15 +7,8 @@ import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.model.Response;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.repository.UserRepository;
-import com.example.ecommerce.service.JwtUtil;
 import com.example.ecommerce.service.ValidateInputService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,11 +19,7 @@ public class UserRegisterLoginAPI {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
     private ValidateInputService validateInputService;
-    @Autowired
-    private JavaMailSender javaMailSender;
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public Response login(@RequestBody LoginRequest loginRequest){
         String username = loginRequest.getUsername();
@@ -41,7 +30,7 @@ public class UserRegisterLoginAPI {
         }
 
         User user = userRepository.findByUsername(username);
-        if (user == null || password.equals(user.getPassword())) {
+        if (user == null || !password.equals(user.getPassword())) {
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
         return new Response(Code.SUCCESS, Message.SUCCESS, username);
@@ -87,7 +76,7 @@ public class UserRegisterLoginAPI {
             return new Response(Code.DATA_DUPLICATED_PHONE, Message.DATA_DUPLICATED_PHONE, null);
         }
 
-        User user = new User(username, password, fullName, email, phone, address,"USER",null);
+        User user = new User(username, password, fullName, email, phone, address,"USER");
         userRepository.save(user);
 
         return new Response(Code.SUCCESS, Message.SUCCESS, null);

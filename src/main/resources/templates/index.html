@@ -446,19 +446,17 @@
             window.location.replace(preUrl + "/login");
         }
         else {
-            token = getCookie("Token");
+            username = getCookie("Username");
             let request = {
                 userID: userID,
                 productID: productID,
-                quantity: 1,
-                signature: token
+                quantity: 1
             }
             $.ajax({
                 url: preUrl + "/addProductToCart",
                 type: "POST",
                 data: JSON.stringify(request),
                 contentType: "application/json",
-                beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
                 success: function (response){
                     console.log(response);
                     if(response.code == 200){

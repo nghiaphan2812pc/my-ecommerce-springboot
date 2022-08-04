@@ -278,7 +278,7 @@
         contentType: "application/json",
         success: function (response){
           console.log(response);
-          if(response.code= 200){
+          if(response.code == 200){
             totalPageNumber = response.data.totalPageNumber;
             renderPageButton(currentPage, totalPageNumber);
             renderListProduct(response.data.listProduct);
@@ -397,19 +397,16 @@
         window.location.replace(preUrl + "/login");
       }
       else {
-        token = getCookie("Token");
         let request = {
           userID: userID,
           productID: productID,
-          quantity: 1,
-          signature: token
+          quantity: 1
         }
         $.ajax({
           url: preUrl + "/addProductToCart",
           type: "POST",
           data: JSON.stringify(request),
           contentType: "application/json",
-          beforeSend: function(xhr){xhr.setRequestHeader('Token', token);},
           success: function (response){
             console.log(response);
             if(response.code == 200){

@@ -7,7 +7,6 @@ import com.example.ecommerce.model.*;
 import com.example.ecommerce.repository.CartProductRepository;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.repository.UserRepository;
-import com.example.ecommerce.service.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,25 +20,20 @@ public class UserCartAPI {
     private ProductRepository productRepository;
     @Autowired
     private CartProductRepository cartProductRepository;
-    @Autowired
-    private JwtUtil jwtUtil;
 
     @RequestMapping(value = "/getCart/{userID}", method = RequestMethod.GET)
-    public Response getCart(@PathVariable(value = "userID")int userID, @RequestParam(value = "Username")String username){
-        //Validate token
-
+    public Response getCart(@PathVariable(value = "userID")int userID){
         //Validate userID
         Optional<User> user = userRepository.findById(userID);
         if(!user.isPresent()){
             return new Response(Code.NOT_FOUND_USER, Message.NOT_FOUND_USER, null);
         }
-        //Success validate
         //Get cart
         List<CartProduct> cart = user.get().getCart();
         return new Response(Code.SUCCESS, Message.SUCCESS, cart);
     }
     @RequestMapping(value = "/addProductToCart", method = RequestMethod.POST)
-    public Response addProductToCart(@RequestBody UpdateProductInCartRequest request, @RequestHeader(value = "Token")String token){
+    public Response addProductToCart(@RequestBody UpdateProductInCartRequest request){
         //Validate request
         int userID, productID, quantity;
         try{
@@ -49,10 +43,7 @@ public class UserCartAPI {
         }catch (Exception e){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Validate token
-        if(!jwtUtil.validateTokenWithID(token,userID)){
-            return new Response(Code.UNAUTHENTICATED, Message.UNAUTHENTICATED, null);
-        }
+
         //Validate quantity
         if(quantity <= 0){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
@@ -87,7 +78,7 @@ public class UserCartAPI {
         return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
     @RequestMapping(value = "/removeProductFromCart",method = RequestMethod.POST)
-    public Response removeProductFromCart(@RequestBody UpdateProductInCartRequest request,@RequestHeader(value = "Token")String token){
+    public Response removeProductFromCart(@RequestBody UpdateProductInCartRequest request){
         //Validate request
         int userID, productID;
         try{
@@ -96,10 +87,7 @@ public class UserCartAPI {
         }catch (Exception e){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Validate token
-        if(!jwtUtil.validateTokenWithID(token,userID)){
-            return new Response(Code.UNAUTHENTICATED, Message.UNAUTHENTICATED, null);
-        }
+
         //Validate userID
         Optional<User> user = userRepository.findById(userID);
         if(!user.isPresent()){
@@ -119,7 +107,7 @@ public class UserCartAPI {
         return new Response(Code.SUCCESS, Message.SUCCESS, null);
     }
     @RequestMapping(value = "/updateProductInCart")
-    public Response updateProductInCart(@RequestBody UpdateProductInCartRequest request, @RequestHeader(value = "Token")String token){
+    public Response updateProductInCart(@RequestBody UpdateProductInCartRequest request){
         //Validate request
         int userID, productID, quantity;
         try{
@@ -129,15 +117,12 @@ public class UserCartAPI {
         }catch (Exception e){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        //Validate token
-        if(!jwtUtil.validateTokenWithID(token,userID)){
-            return new Response(Code.UNAUTHENTICATED, Message.UNAUTHENTICATED, null);
-        }
+
         //Validate quantity
         if(quantity < 0){
             return new Response(Code.INVALID_DATA, Message.INVALID_DATA, null);
         }
-        if(quantity == 0) return removeProductFromCart(request, token);
+        if(quantity == 0) return removeProductFromCart(request);
         //Validate userID
         Optional<User> user = userRepository.findById(userID);
         if(!user.isPresent()){
