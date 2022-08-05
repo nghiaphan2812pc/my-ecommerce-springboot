@@ -581,7 +581,7 @@
 	$("#slider-range").slider({
 		range: true,
 		min: 0,
-		max: 200,
+		max: 999,
 		values: [0, 0],
 		slide: function (event, ui) {
 			$("#amount").val(ui.values[0] + "-" + ui.values[1] + " triệu VND");

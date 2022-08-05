@@ -61,7 +61,7 @@ public class ProductController {
         pagination.setTotalPageNumber(page.getTotalPages());
         pagination.setListProduct(listProducts);
         //page hien tai > totalPage
-        if (pageNumber > page.getTotalPages()) {
+        if (pageNumber > page.getTotalPages() && listProducts.size() != 0) {
             return new Response(Code.NOT_FOUND, Message.NOT_FOUND, null);
         }
         //Cho vao response
